@@ -5,6 +5,7 @@ const sendToken = require("../utils/jwtToken");
 const sendEmail = require("../utils/sendEmail");
 const crypto = require("crypto");
 
+
 //Register User
 exports.registerUser = catchAsyncErrors(async(req,res,next)=>{
     const {name,email,password} = req.body;
@@ -24,7 +25,7 @@ exports.registerUser = catchAsyncErrors(async(req,res,next)=>{
 //Login User
 exports.loginUser = catchAsyncErrors(async(req,res,next)=>{
 
-    const {email,password} = req.body;
+    const { email,password } = req.body;
 
     //cheaking if user has given password and email both    
     if(!email || !password){
@@ -38,7 +39,7 @@ exports.loginUser = catchAsyncErrors(async(req,res,next)=>{
         return next(new ErrorHander("Invalid email and password",401));
     }
 
-    const isPasswordMatched = user.comparePassword(password);
+    const isPasswordMatched = await user.comparePassword(password);
     if(!isPasswordMatched){
         return next(new ErrorHander("Invalid email and password",401));
     }
@@ -184,11 +185,11 @@ exports.updateProfile = catchAsyncErrors(async (req, res, next) => {
 
 // Get all users Detail (admin)
 exports.getAllUser = catchAsyncErrors(async (req, res, next) => {
-  const user = await User.findById(req.user.id);
+  const users = await User.find();
 
   res.status(200).json({
     success: true,
-    user,
+    users,
   });
 });
 
