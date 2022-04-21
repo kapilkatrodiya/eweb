@@ -1,9 +1,12 @@
-import React, { Fragment } from "react"; 
+import React, { Fragment, useEffect } from "react"; 
 import "./Home.css";  
 // import {CgMouse} from "@react-icons/all-files"
 import Product from "./Product.js";
 // eslint-disable-next-line
 import MetaData from "../layout/MetaData";
+import { getProduct } from "../../actions/productAction";
+// eslint-disable-next-line
+import {useSelector,useDispatch} from "react-redux"
 
 const product ={
   name: "Blue Tshirt",
@@ -13,6 +16,13 @@ const product ={
 };
 
 const Home = () => {
+  const dispatch = useDispatch();
+  const {loading,error,products,productsCount} = useSelector((state)=>state.products);
+
+  useEffect(()=>{
+    dispatch(getProduct());
+  }, [dispatch]);
+
   return (
     <Fragment>
           <MetaData title="ECOMMERCE"/>
@@ -30,14 +40,7 @@ const Home = () => {
           <h2 className="homeHeading">Featured Products</h2>
 
           <div className="container" id="container">
-            <Product product={product} />
-            <Product product={product} />
-            <Product product={product} />
-            <Product product={product} />
-            <Product product={product} />
-            <Product product={product} />
-            <Product product={product} />
-            <Product product={product} />
+            {products && products.map((product)=> <Product product={product} />)}
           </div>
     </Fragment>
   )};
