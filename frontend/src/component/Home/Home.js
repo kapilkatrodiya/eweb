@@ -1,30 +1,34 @@
 import React, { Fragment, useEffect } from "react"; 
 import "./Home.css";  
 // import {CgMouse} from "@react-icons/all-files"
-import Product from "./Product.js";
+import Product from "./ProductCard.js";
 // eslint-disable-next-line
 import MetaData from "../layout/MetaData";
-import { getProduct } from "../../actions/productAction";
+import { clearErrors, getProduct } from "../../actions/productAction";
 // eslint-disable-next-line
-import {useSelector,useDispatch} from "react-redux"
-
-const product ={
-  name: "Blue Tshirt",
-  images:[{ url: "https://target.scene7.com/is/image/Target/GUEST_a848f2e3-6cd6-4533-a1cf-b11d560c88b4"}],
-  price:"3000",
-  _id:"kapil"
-};
+import {useSelector,useDispatch} from "react-redux";
+// eslint-disable-next-line
+import Loader from "../layout/Loader/Loader";
+import { useAlert } from "react-alert";
 
 const Home = () => {
+  const alert = useAlert();
   const dispatch = useDispatch();
   const {loading,error,products,productsCount} = useSelector((state)=>state.products);
 
   useEffect(()=>{
+    if(error){
+      alert.error(error);
+      dispatch(clearErrors());
+    }
     dispatch(getProduct());
-  }, [dispatch]);
+  }, [dispatch,error,alert]);
 
   return (
     <Fragment>
+
+      {loading ? (<Loader />): 
+      (<Fragment>
           <MetaData title="ECOMMERCE"/>
             <div className="banner">
             <p>Welcome to Ecommerce</p>
@@ -42,6 +46,7 @@ const Home = () => {
           <div className="container" id="container">
             {products && products.map((product)=> <Product product={product} />)}
           </div>
+    </Fragment>)}
     </Fragment>
   )};
     
